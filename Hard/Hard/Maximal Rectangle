@@ -1,0 +1,34 @@
+class Solution {
+public:
+    int maximalRectangle(vector<vector<char>>& matrix) {
+        if(matrix.empty() || matrix[0].empty()) return 0;
+        int rows = matrix.size(), cols = matrix[0].size();
+        vector<int> heights(cols,0);
+        int ans = 0;
+
+        for(int r=0;r<rows;r++){
+            for(int c=0;c<cols;c++){
+                if(matrix[r][c]=='1') heights[c]++;
+                else heights[c]=0;
+            }
+            ans = max(ans, largestHistogram(heights));
+        }
+        return ans;
+    }
+
+    int largestHistogram(vector<int>& h){
+        vector<int> a = h;
+        a.push_back(0);
+        stack<int> st;
+        int best=0;
+        for(int i=0;i<(int)a.size();i++){
+            while(!st.empty() && a[st.top()] > a[i]){
+                int height = a[st.top()]; st.pop();
+                int left = st.empty()? -1 : st.top();
+                best = max(best, height * (i-left-1));
+            }
+            st.push(i);
+        }
+        return best;
+    }
+};
