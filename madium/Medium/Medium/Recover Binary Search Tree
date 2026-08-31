@@ -1,0 +1,30 @@
+class Solution {
+public:
+    TreeNode* first = nullptr;
+    TreeNode* second = nullptr;
+    TreeNode* prev = nullptr;
+
+    void inorder(TreeNode* root) {
+        if (!root) return;
+        
+        inorder(root->left);
+        
+        // violation check
+        if (prev && prev->val > root->val) {
+            if (!first) {
+                first = prev;  // pehli galti
+                second = root; // second ko bhi pakdo
+            } else {
+                second = root; // dusri galti
+            }
+        }
+        prev = root;
+        
+        inorder(root->right);
+    }
+
+    void recoverTree(TreeNode* root) {
+        inorder(root);
+        swap(first->val, second->val);
+    }
+};
