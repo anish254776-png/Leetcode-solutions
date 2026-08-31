@@ -1,0 +1,11 @@
+class Solution {
+public:
+    bool isSameTree(TreeNode* p, TreeNode* q) {
+        if (!p && !q) return true;       // dono khatam
+        if (!p || !q) return false;      // ek khatam, ek bacha
+        if (p->val != q->val) return false; // value alag
+
+        return isSameTree(p->left, q->left) && 
+               isSameTree(p->right, q->right);
+    }
+};
