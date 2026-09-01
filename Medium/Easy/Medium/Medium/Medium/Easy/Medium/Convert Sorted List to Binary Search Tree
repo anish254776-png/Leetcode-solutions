@@ -1,0 +1,27 @@
+class Solution {
+public:
+    TreeNode* sortedListToBST(ListNode* head) {
+        if (!head) return nullptr;
+        if (!head->next) return new TreeNode(head->val);
+
+        // slow-fast se mid nikalo
+        ListNode* slow = head;
+        ListNode* fast = head;
+        ListNode* prev = nullptr;
+
+        while (fast && fast->next) {
+            prev = slow;
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+
+        // prev->next tod do, taaki left list alag ho jaye
+        prev->next = nullptr;
+
+        TreeNode* root = new TreeNode(slow->val);
+        root->left = sortedListToBST(head); // left part
+        root->right = sortedListToBST(slow->next); // right part
+
+        return root;
+    }
+};
