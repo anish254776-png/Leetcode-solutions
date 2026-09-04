@@ -1,0 +1,61 @@
+class Solution {
+public:
+    vector<vector<string>> findLadders(string beginWord, string endWord, vector<string>& wordList) {
+        unordered_set<string> dict(wordList.begin(), wordList.end());
+        if (!dict.count(endWord)) return {};
+
+        unordered_map<string, vector<string>> parents; // child -> list of parents
+        unordered_map<string, int> dist;
+        queue<string> q;
+        q.push(beginWord);
+        dist[beginWord] = 0;
+        int minDist = INT_MAX;
+
+        while (!q.empty()) {
+            string cur = q.front(); q.pop();
+            int d = dist[cur];
+            if (d > minDist) break; // shortest mil gaya
+
+            string word = cur;
+            for (int i = 0; i < word.size(); i++) {
+                char orig = word[i];
+                for (char c = 'a'; c <= 'z'; c++) {
+                    if (c == orig) continue;
+                    word[i] = c;
+                    if (!dict.count(word)) continue;
+
+                    if (!dist.count(word)) {
+                        dist[word] = d + 1;
+                        q.push(word);
+                        parents[word].push_back(cur);
+                        if (word == endWord) minDist = d + 1;
+                    } else if (dist[word] == d + 1) {
+                        parents[word].push_back(cur);
+                    }
+                }
+                word[i] = orig;
+            }
+        }
+
+        vector<vector<string>> res;
+        vector<string> path = {endWord};
+        function<void(string)> dfs = [&](string cur) {
+            if (cur == beginWord) {
+                vector<string> tmp = path;
+                reverse(tmp.begin(), tmp.end());
+                res.push_back(tmp);
+                return;
+            }
+            for (string p : parents[cur]) {
+                path.push_back(p);
+                dfs(p);
+                path.pop_back();
+            }
+        };
+
+        if (parents.count(endWord) || beginWord == endWord)
+            dfs(endWord);
+
+        return res;
+    }
+};
