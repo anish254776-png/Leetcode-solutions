@@ -1,0 +1,29 @@
+class Solution {
+public:
+    unordered_set<string> dict;
+    unordered_map<int, vector<string>> memo;
+
+    vector<string> dfs(string &s, int idx) {
+        if (memo.count(idx)) return memo[idx];
+        if (idx == s.size()) return {""};
+
+        vector<string> res;
+        string cur;
+        for (int i = idx; i < s.size(); i++) {
+            cur += s[i];
+            if (!dict.count(cur)) continue;
+
+            auto next = dfs(s, i+1);
+            for (auto &sub : next) {
+                if (sub.empty()) res.push_back(cur);
+                else res.push_back(cur + " " + sub);
+            }
+        }
+        return memo[idx] = res;
+    }
+
+    vector<string> wordBreak(string s, vector<string>& wordDict) {
+        dict = unordered_set<string>(wordDict.begin(), wordDict.end());
+        return dfs(s, 0);
+    }
+};
