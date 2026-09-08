@@ -1,0 +1,21 @@
+class Solution {
+public:
+    vector<int> preorderTraversal(TreeNode* root) {
+        vector<int> ans;
+        if (!root) return ans;
+        
+        stack<TreeNode*> st;
+        st.push(root);
+        while (!st.empty()) {
+            TreeNode* cur = st.top();
+            st.pop();
+            ans.push_back(cur->val);
+            if (cur->right) st.push(cur->right);
+            if (cur->left) st.push(cur->left);
+        }
+        return ans;
+    }
+};
+
+// Recursive 1-liner
+// void dfs(TreeNode* r, vector<int>& ans){ if(!r) return; ans.push_back(r->val); dfs(r->left,ans); dfs(r->right,ans); }
