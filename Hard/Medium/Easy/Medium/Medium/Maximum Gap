@@ -1,0 +1,31 @@
+class Solution {
+public:
+    int maximumGap(vector<int>& nums) {
+        int n = nums.size();
+        if(n < 2) return 0;
+        // O(n) Bucket approach
+        int mn = *min_element(nums.begin(), nums.end());
+        int mx = *max_element(nums.begin(), nums.end());
+        if(mn == mx) return 0;
+
+        int bucketSize = max(1, (mx - mn + n - 2) / (n - 1)); // ceil
+        int bucketCount = (mx - mn) / bucketSize + 1;
+        vector<int> bMin(bucketCount, INT_MAX), bMax(bucketCount, INT_MIN);
+        vector<bool> used(bucketCount, false);
+
+        for(int x : nums){
+            int idx = (x - mn) / bucketSize;
+            bMin[idx] = min(bMin[idx], x);
+            bMax[idx] = max(bMax[idx], x);
+            used[idx] = true;
+        }
+
+        int prev = mn, ans = 0;
+        for(int i=0;i<bucketCount;i++){
+            if(!used[i]) continue;
+            ans = max(ans, bMin[i] - prev);
+            prev = bMax[i];
+        }
+        return ans;
+    }
+};
