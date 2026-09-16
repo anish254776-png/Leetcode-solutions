@@ -1,0 +1,21 @@
+class Solution {
+public:
+    int countPrimes(int n) {
+        if (n <= 2) return 0;
+        int m = n / 2; // numbers 1,3,5... < n
+        vector<char> isPrime(m, true);
+        isPrime[0] = false; // 1 not prime
+        int sq = (int)sqrt(n);
+        for (int i = 1; 2*i+1 <= sq; ++i) {
+            if (!isPrime[i]) continue;
+            int p = 2*i + 1;
+            int start = (p * p) / 2;
+            for (int j = start; j < m; j += p) {
+                isPrime[j] = false;
+            }
+        }
+        int cnt = 1; // prime 2
+        for (int i = 1; i < m; ++i) if (isPrime[i]) ++cnt;
+        return cnt;
+    }
+};
