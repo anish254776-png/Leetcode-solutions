@@ -1,0 +1,39 @@
+class Trie {
+    struct Node {
+        Node* ch[26] = {};
+        bool end = false;
+    };
+    Node* root;
+public:
+    Trie() { root = new Node(); }
+
+    void insert(string word) {
+        Node* cur = root;
+        for (char c : word) {
+            int i = c - 'a';
+            if (!cur->ch[i]) cur->ch[i] = new Node();
+            cur = cur->ch[i];
+        }
+        cur->end = true;
+    }
+
+    bool search(string word) {
+        Node* cur = root;
+        for (char c : word) {
+            int i = c - 'a';
+            if (!cur->ch[i]) return false;
+            cur = cur->ch[i];
+        }
+        return cur->end;
+    }
+
+    bool startsWith(string prefix) {
+        Node* cur = root;
+        for (char c : prefix) {
+            int i = c - 'a';
+            if (!cur->ch[i]) return false;
+            cur = cur->ch[i];
+        }
+        return true;
+    }
+};
