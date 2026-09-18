@@ -1,0 +1,39 @@
+class WordDictionary {
+    struct Node {
+        Node* ch[26] = {};
+        bool end = false;
+    };
+    Node* root;
+public:
+    WordDictionary() { root = new Node(); }
+
+    void addWord(string word) {
+        Node* cur = root;
+        for(char c: word){
+            int i=c-'a';
+            if(!cur->ch[i]) cur->ch[i]=new Node();
+            cur=cur->ch[i];
+        }
+        cur->end=true;
+    }
+
+    bool search(string word) {
+        return dfs(root, word, 0);
+    }
+private:
+    bool dfs(Node* node, const string& w, int idx){
+        if(!node) return false;
+        if(idx== (int)w.size()) return node->end;
+        char c = w[idx];
+        if(c=='.'){
+            for(int i=0;i<26;++i){
+                if(node->ch[i] && dfs(node->ch[i], w, idx+1)) return true;
+            }
+            return false;
+        }else{
+            int i=c-'a';
+            if(!node->ch[i]) return false;
+            return dfs(node->ch[i], w, idx+1);
+        }
+    }
+};
