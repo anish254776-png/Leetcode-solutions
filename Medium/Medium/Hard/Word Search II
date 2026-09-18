@@ -1,0 +1,47 @@
+class Solution {
+    struct Node {
+        Node* ch[26] = {};
+        string word = "";
+    };
+    Node* root = new Node();
+    int m,n;
+    vector<string> ans;
+    vector<vector<char>> *b;
+
+    void addWord(const string& w){
+        Node* cur=root;
+        for(char c: w){
+            int i=c-'a';
+            if(!cur->ch[i]) cur->ch[i]=new Node();
+            cur=cur->ch[i];
+        }
+        cur->word=w;
+    }
+
+    void dfs(int r,int c, Node* node){
+        char ch = (*b)[r][c];
+        if(ch=='#' ||!node->ch[ch-'a']) return;
+        node = node->ch[ch-'a'];
+        if(!node->word.empty()){
+            ans.push_back(node->word);
+            node->word=""; // avoid duplicate
+        }
+        (*b)[r][c]='#';
+        if(r>0) dfs(r-1,c,node);
+        if(r+1<m) dfs(r+1,c,node);
+        if(c>0) dfs(r,c-1,node);
+        if(c+1<n) dfs(r,c+1,node);
+        (*b)[r][c]=ch;
+    }
+
+public:
+    vector<string> findWords(vector<vector<char>>& board, vector<string>& words) {
+        b=&board;
+        m=board.size(); n=board[0].size();
+        for(auto &w: words) addWord(w);
+        for(int i=0;i<m;++i)
+            for(int j=0;j<n;++j)
+                dfs(i,j,root);
+        return ans;
+    }
+};
