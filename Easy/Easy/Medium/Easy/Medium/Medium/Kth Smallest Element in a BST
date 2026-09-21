@@ -1,0 +1,14 @@
+class Solution {
+public:
+    int kthSmallest(TreeNode* root, int k) {
+        int cnt=0, ans=0;
+        function<void(TreeNode*)> dfs = [&](TreeNode* node){
+            if(!node || cnt>=k) return;
+            dfs(node->left);
+            if(++cnt==k){ ans=node->val; return; }
+            dfs(node->right);
+        };
+        dfs(root);
+        return ans;
+    }
+};
